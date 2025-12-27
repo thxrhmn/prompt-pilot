@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Firefly Automation</title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				width: 400px;
+				padding: 16px;
+				font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+					Oxygen, Ubuntu, Cantarell, sans-serif;
+				font-size: 14px;
+				background: #f5f5f5;
+			}
+
+			h1 {
+				font-size: 18px;
+				margin-bottom: 16px;
+				color: #333;
+			}
+
+			.section {
+				background: white;
+				border-radius: 8px;
+				padding: 12px;
+				margin-bottom: 12px;
+				box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+			}
+
+			.section-title {
+				font-size: 13px;
+				font-weight: 600;
+				margin-bottom: 8px;
+				color: #555;
+			}
+
+			textarea {
+				width: 100%;
+				min-height: 100px;
+				padding: 8px;
+				border: 1px solid #ddd;
+				border-radius: 4px;
+				font-family: monospace;
+				font-size: 12px;
+				resize: vertical;
+				margin-bottom: 8px;
+				overflow-x: auto;
+				white-space: pre;
+				word-wrap: normal;
+			}
+
+			textarea:focus {
+				outline: none;
+				border-color: #007bff;
+			}
+
+			.file-input-wrapper {
+				position: relative;
+				overflow: hidden;
+				display: inline-block;
+				width: 100%;
+			}
+
+			.file-input-label {
+				display: block;
+				padding: 10px;
+				background: #f8f9fa;
+				border: 1px dashed #ccc;
+				border-radius: 4px;
+				text-align: center;
+				cursor: pointer;
+				transition: all 0.2s;
+			}
+
+			.file-input-label:hover {
+				background: #e9ecef;
+				border-color: #007bff;
+			}
+
+			input[type="file"] {
+				position: absolute;
+				left: -9999px;
+			}
+
+			.file-name {
+				margin-top: 6px;
+				font-size: 11px;
+				color: #666;
+				font-style: italic;
+			}
+
+			.controls {
+				display: flex;
+				gap: 8px;
+				margin-bottom: 12px;
+			}
+
+			button {
+				flex: 1;
+				padding: 10px;
+				border: none;
+				border-radius: 4px;
+				font-size: 13px;
+				font-weight: 600;
+				cursor: pointer;
+				transition: all 0.2s;
+			}
+
+			button:disabled {
+				opacity: 0.5;
+				cursor: not-allowed;
+			}
+
+			#startBtn {
+				background: #28a745;
+				color: white;
+			}
+
+			#startBtn:hover:not(:disabled) {
+				background: #218838;
+			}
+
+			#pauseBtn {
+				background: #ffc107;
+				color: #333;
+			}
+
+			#pauseBtn:hover:not(:disabled) {
+				background: #e0a800;
+			}
+
+			#stopBtn {
+				background: #dc3545;
+				color: white;
+			}
+
+			#stopBtn:hover:not(:disabled) {
+				background: #c82333;
+			}
+
+			.status {
+				padding: 12px;
+				background: #e7f3ff;
+				border-left: 3px solid #007bff;
+				border-radius: 4px;
+			}
+
+			.status-row {
+				display: flex;
+				justify-content: space-between;
+				margin-bottom: 6px;
+				font-size: 12px;
+			}
+
+			.status-row:last-child {
+				margin-bottom: 0;
+			}
+
+			.status-label {
+				font-weight: 600;
+				color: #555;
+			}
+
+			.status-value {
+				color: #333;
+			}
+
+			.status-value.state-idle {
+				color: #6c757d;
+			}
+
+			.status-value.state-running {
+				color: #28a745;
+				font-weight: 600;
+			}
+
+			.status-value.state-paused {
+				color: #ffc107;
+				font-weight: 600;
+			}
+
+			.status-value.state-finished {
+				color: #007bff;
+				font-weight: 600;
+			}
+
+			.status-value.state-error {
+				color: #dc3545;
+				font-weight: 600;
+			}
+
+			.hint {
+				font-size: 11px;
+				color: #6c757d;
+				margin-top: 4px;
+			}
+
+			.delay-control {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+				margin-top: 8px;
+			}
+
+			.delay-control label {
+				font-size: 12px;
+				color: #555;
+			}
+
+			.delay-control input {
+				flex: 1;
+				padding: 6px;
+				border: 1px solid #ddd;
+				border-radius: 4px;
+				font-size: 12px;
+			}
+
+			.delay-control span {
+				font-size: 11px;
+				color: #6c757d;
+			}
+
+			.logs {
+				max-height: 200px;
+				overflow-y: auto;
+				background: #f8f9fa;
+				border: 1px solid #ddd;
+				border-radius: 4px;
+				padding: 8px;
+				font-family: monospace;
+				font-size: 11px;
+			}
+
+			.log-entry {
+				margin-bottom: 4px;
+				padding: 4px 6px;
+				border-radius: 3px;
+				line-height: 1.4;
+			}
+
+			.log-entry:last-child {
+				margin-bottom: 0;
+			}
+
+			.log-info {
+				background: #e7f3ff;
+				color: #0066cc;
+			}
+
+			.log-success {
+				background: #d4edda;
+				color: #155724;
+			}
+
+			.log-warning {
+				background: #fff3cd;
+				color: #856404;
+			}
+
+			.log-error {
+				background: #f8d7da;
+				color: #721c24;
+			}
+
+			.log-time {
+				color: #6c757d;
+				font-weight: 600;
+				margin-right: 6px;
+			}
+
+			.log-level {
+				font-weight: 600;
+				margin-right: 6px;
+				text-transform: uppercase;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>🎬 Firefly Automation</h1>
+
+		<div class="section">
+			<div class="section-title">Prompts (one per line)</div>
+			<textarea
+				id="promptInput"
+				placeholder="Enter prompts, one per line&#10;Example:&#10;First prompt&#10;Second prompt&#10;Third prompt"
+			></textarea>
+			<div class="hint">You can paste multiple lines at once</div>
+		</div>
+
+		<div class="section">
+			<div class="section-title">Or Upload TXT File</div>
+			<div class="file-input-wrapper">
+				<label for="txtInput" class="file-input-label">
+					📁 Choose TXT File
+				</label>
+				<input type="file" id="txtInput" accept=".txt" />
+			</div>
+			<div class="file-name" id="fileName">No file selected</div>
+			<div class="hint">
+				One prompt per line (supports long prompts with horizontal scroll)
+			</div>
+		</div>
+
+		<div class="section">
+			<div class="section-title">Settings</div>
+			<div class="delay-control">
+				<label for="delayInput">Delay:</label>
+				<input
+					type="number"
+					id="delayInput"
+					min="500"
+					max="10000"
+					step="100"
+					value="1000"
+				/>
+				<span>ms</span>
+			</div>
+			<div class="hint">
+				Buffer time between prompts (actual wait controlled by button state)
+			</div>
+
+			<div style="margin-top: 12px">
+				<label style="display: flex; align-items: center; cursor: pointer">
+					<input
+						type="checkbox"
+						id="autoDownloadCheckbox"
+						checked
+						style="margin-right: 8px"
+					/>
+					<span style="font-size: 13px"
+						>Auto-download videos after generation</span
+					>
+				</label>
+				<div class="hint" style="margin-left: 24px">
+					Automatically click download button after each video generates
+				</div>
+			</div>
+		</div>
+
+		<div class="section">
+			<div class="controls">
+				<button id="startBtn">▶️ Start</button>
+				<button id="pauseBtn" disabled>⏸️ Pause</button>
+				<button id="stopBtn" disabled>⏹️ Stop</button>
+			</div>
+		</div>
+
+		<div class="status">
+			<div class="status-row">
+				<span class="status-label">State:</span>
+				<span class="status-value state-idle" id="statusState">Idle</span>
+			</div>
+			<div class="status-row">
+				<span class="status-label">Progress:</span>
+				<span class="status-value" id="statusProgress">0 / 0</span>
+			</div>
+			<div class="status-row">
+				<span class="status-label">Current:</span>
+				<span class="status-value" id="statusCurrent">—</span>
+			</div>
+		</div>
+
+		<div class="section">
+			<div class="section-title">Logs</div>
+			<div class="logs" id="logsContainer">
+				<div class="log-entry log-info">Ready to start...</div>
+			</div>
+		</div>
+
+		<script src="popup.js"></script>
+	</body>
+</html>
