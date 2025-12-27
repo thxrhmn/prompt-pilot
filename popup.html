@@ -3,10 +3,10 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Firefly Automation</title>
+		<title>PromptPilot (for Firefly)</title>
 		<meta
 			name="description"
-			content="Firefly Automation - Batch video generation tool"
+			content="PromptPilot - Batch video generation tool for Adobe Firefly"
 		/>
 		<link
 			rel="stylesheet"
@@ -99,12 +99,8 @@
 			.title-bar-icon {
 				width: 16px;
 				height: 16px;
-				background: linear-gradient(135deg, #ffcc00 0%, #ff9900 100%);
-				border-radius: 2px;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				font-size: 10px;
+				display: block;
+				image-rendering: pixelated;
 			}
 
 			.title-bar-controls {
@@ -196,19 +192,10 @@
 				resize: vertical;
 				background: var(--win-white);
 				color: var(--win-text);
-			}
-
-			textarea:focus {
-				outline: none;
-			}
-
-			/* Classic Buttons */
-			.win-button {
-				padding: 4px 16px;
-				background: var(--win-bg);
-				border: 2px solid;
-				border-color: var(--win-white) var(--win-darker) var(--win-darker)
-					var(--win-white);
+				overflow-x: auto;
+				overflow-y: auto;
+				white-space: pre;
+				word-wrap: normal;
 				font-family: inherit;
 				font-size: 13px;
 				cursor: pointer;
@@ -585,8 +572,12 @@
 		<div class="window">
 			<div class="title-bar">
 				<div class="title-bar-text">
-					<div class="title-bar-icon">🎬</div>
-					Firefly Automation
+					<img
+						src="icons/icon16.png"
+						alt="PromptPilot"
+						class="title-bar-icon"
+					/>
+					PromptPilot (for Firefly)
 				</div>
 				<div class="title-bar-controls">
 					<button aria-label="Minimize">_</button>
@@ -628,12 +619,7 @@ Underwater scene with coral"
 							placeholder="No file selected"
 							readonly
 						/>
-						<button
-							class="win-button"
-							id="browseBtn"
-						>
-							Browse...
-						</button>
+						<button class="win-button" id="browseBtn">Browse...</button>
 					</div>
 					<input type="file" id="txtInput" accept=".txt" />
 				</div>
