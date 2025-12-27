@@ -4,6 +4,14 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Firefly Automation</title>
+		<meta
+			name="description"
+			content="Firefly Automation - Batch video generation tool"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&display=swap"
+		/>
 		<style>
 			* {
 				margin: 0;
@@ -11,366 +19,714 @@
 				box-sizing: border-box;
 			}
 
+			:root {
+				--win-bg: #c0c0c0;
+				--win-dark: #808080;
+				--win-darker: #404040;
+				--win-light: #dfdfdf;
+				--win-white: #ffffff;
+				--win-title: #000080;
+				--win-title-inactive: #808080;
+				--win-text: #000000;
+				--win-link: #0000ff;
+				--win-highlight: #000080;
+				--win-highlight-text: #ffffff;
+			}
+
 			body {
-				width: 400px;
-				padding: 16px;
-				font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-					Oxygen, Ubuntu, Cantarell, sans-serif;
+				min-width: 320px;
+				max-width: 520px;
+				width: 100%;
+				margin: 0 auto;
+				padding: 20px;
+				font-family: "Pixelify Sans", "MS Sans Serif", "Segoe UI", Tahoma,
+					sans-serif;
 				font-size: 14px;
-				background: #f5f5f5;
+				background: #008080;
+				min-height: 100vh;
+				color: var(--win-text);
 			}
 
-			h1 {
-				font-size: 18px;
-				margin-bottom: 16px;
-				color: #333;
+			/* Classic 3D border effects */
+			.border-outset {
+				border: 2px solid;
+				border-color: var(--win-white) var(--win-darker) var(--win-darker)
+					var(--win-white);
 			}
 
-			.section {
-				background: white;
-				border-radius: 8px;
-				padding: 12px;
-				margin-bottom: 12px;
-				box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+			.border-inset {
+				border: 2px solid;
+				border-color: var(--win-darker) var(--win-white) var(--win-white)
+					var(--win-darker);
 			}
 
-			.section-title {
-				font-size: 13px;
-				font-weight: 600;
+			.border-ridge {
+				border: 2px solid;
+				border-color: var(--win-light) var(--win-dark) var(--win-dark)
+					var(--win-light);
+				box-shadow: inset 1px 1px 0 var(--win-white),
+					inset -1px -1px 0 var(--win-darker);
+			}
+
+			/* Main Window */
+			.window {
+				background: var(--win-bg);
+				border: 2px solid;
+				border-color: var(--win-light) var(--win-darker) var(--win-darker)
+					var(--win-light);
+				box-shadow: 1px 1px 0 var(--win-darker);
+			}
+
+			.title-bar {
+				background: linear-gradient(90deg, var(--win-title), #1084d0);
+				padding: 3px 4px;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				user-select: none;
+			}
+
+			.title-bar-text {
+				color: var(--win-white);
+				font-weight: 700;
+				font-size: 14px;
+				display: flex;
+				align-items: center;
+				gap: 6px;
+				text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
+			}
+
+			.title-bar-icon {
+				width: 16px;
+				height: 16px;
+				background: linear-gradient(135deg, #ffcc00 0%, #ff9900 100%);
+				border-radius: 2px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 10px;
+			}
+
+			.title-bar-controls {
+				display: flex;
+				gap: 2px;
+			}
+
+			.title-bar-controls button {
+				width: 16px;
+				height: 14px;
+				background: var(--win-bg);
+				border: 2px solid;
+				border-color: var(--win-white) var(--win-darker) var(--win-darker)
+					var(--win-white);
+				font-size: 9px;
+				font-weight: bold;
+				color: var(--win-text);
+				cursor: pointer;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				padding: 0;
+				font-family: inherit;
+			}
+
+			.title-bar-controls button:active {
+				border-color: var(--win-darker) var(--win-white) var(--win-white)
+					var(--win-darker);
+			}
+
+			.window-body {
+				padding: 8px;
+			}
+
+			/* Menu Bar */
+			.menu-bar {
+				display: flex;
+				gap: 0;
+				padding: 2px 0;
+				border-bottom: 1px solid var(--win-dark);
 				margin-bottom: 8px;
-				color: #555;
 			}
 
+			.menu-item {
+				padding: 2px 8px;
+				cursor: pointer;
+				font-size: 13px;
+			}
+
+			.menu-item:hover {
+				background: var(--win-highlight);
+				color: var(--win-highlight-text);
+			}
+
+			.menu-item span {
+				text-decoration: underline;
+			}
+
+			/* Group Box */
+			.group-box {
+				border: 1px solid var(--win-dark);
+				box-shadow: 1px 1px 0 var(--win-white);
+				padding: 12px 8px 8px;
+				margin-bottom: 10px;
+				position: relative;
+				background: var(--win-bg);
+			}
+
+			.group-box-title {
+				position: absolute;
+				top: -8px;
+				left: 8px;
+				background: var(--win-bg);
+				padding: 0 4px;
+				font-size: 13px;
+				color: var(--win-text);
+			}
+
+			/* Text Area */
 			textarea {
 				width: 100%;
 				min-height: 100px;
-				padding: 8px;
-				border: 1px solid #ddd;
-				border-radius: 4px;
-				font-family: monospace;
-				font-size: 12px;
+				padding: 4px;
+				border: 2px solid;
+				border-color: var(--win-dark) var(--win-white) var(--win-white)
+					var(--win-dark);
+				font-family: "Courier New", monospace;
+				font-size: 13px;
 				resize: vertical;
-				margin-bottom: 8px;
-				overflow-x: auto;
-				white-space: pre;
-				word-wrap: normal;
+				background: var(--win-white);
+				color: var(--win-text);
 			}
 
 			textarea:focus {
 				outline: none;
-				border-color: #007bff;
 			}
 
-			.file-input-wrapper {
-				position: relative;
-				overflow: hidden;
-				display: inline-block;
-				width: 100%;
-			}
-
-			.file-input-label {
-				display: block;
-				padding: 10px;
-				background: #f8f9fa;
-				border: 1px dashed #ccc;
-				border-radius: 4px;
-				text-align: center;
-				cursor: pointer;
-				transition: all 0.2s;
-			}
-
-			.file-input-label:hover {
-				background: #e9ecef;
-				border-color: #007bff;
-			}
-
-			input[type="file"] {
-				position: absolute;
-				left: -9999px;
-			}
-
-			.file-name {
-				margin-top: 6px;
-				font-size: 11px;
-				color: #666;
-				font-style: italic;
-			}
-
-			.controls {
-				display: flex;
-				gap: 8px;
-				margin-bottom: 12px;
-			}
-
-			button {
-				flex: 1;
-				padding: 10px;
-				border: none;
-				border-radius: 4px;
+			/* Classic Buttons */
+			.win-button {
+				padding: 4px 16px;
+				background: var(--win-bg);
+				border: 2px solid;
+				border-color: var(--win-white) var(--win-darker) var(--win-darker)
+					var(--win-white);
+				font-family: inherit;
 				font-size: 13px;
-				font-weight: 600;
 				cursor: pointer;
-				transition: all 0.2s;
+				min-width: 75px;
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				gap: 4px;
 			}
 
-			button:disabled {
-				opacity: 0.5;
+			.win-button:hover {
+				background: #d4d4d4;
+			}
+
+			.win-button:active {
+				border-color: var(--win-darker) var(--win-white) var(--win-white)
+					var(--win-darker);
+				padding: 5px 15px 3px 17px;
+			}
+
+			.win-button:disabled {
+				color: var(--win-dark);
+				text-shadow: 1px 1px 0 var(--win-white);
 				cursor: not-allowed;
 			}
 
-			#startBtn {
-				background: #28a745;
-				color: white;
+			.win-button:focus {
+				outline: 1px dotted var(--win-text);
+				outline-offset: -4px;
 			}
 
-			#startBtn:hover:not(:disabled) {
-				background: #218838;
+			.win-button.primary {
+				border: 3px solid;
+				border-color: var(--win-text) var(--win-text) var(--win-text)
+					var(--win-text);
+				box-shadow: inset 0 0 0 1px var(--win-bg),
+					inset 2px 2px 0 var(--win-white),
+					inset -2px -2px 0 var(--win-darker);
 			}
 
-			#pauseBtn {
-				background: #ffc107;
-				color: #333;
+			/* Button Row */
+			.button-row {
+				display: flex;
+				gap: 6px;
+				justify-content: center;
+				margin-top: 8px;
 			}
 
-			#pauseBtn:hover:not(:disabled) {
-				background: #e0a800;
+			/* File Input */
+			.file-row {
+				display: flex;
+				gap: 4px;
+				align-items: center;
 			}
 
-			#stopBtn {
-				background: #dc3545;
-				color: white;
+			.file-path {
+				flex: 1;
+				padding: 3px 4px;
+				border: 2px solid;
+				border-color: var(--win-dark) var(--win-white) var(--win-white)
+					var(--win-dark);
+				background: var(--win-white);
+				font-size: 13px;
+				font-family: inherit;
+				min-width: 0;
 			}
 
-			#stopBtn:hover:not(:disabled) {
-				background: #c82333;
+			input[type="file"] {
+				display: none;
 			}
 
-			.status {
-				padding: 12px;
-				background: #e7f3ff;
-				border-left: 3px solid #007bff;
-				border-radius: 4px;
+			/* Form Controls */
+			.form-row {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+				margin-bottom: 8px;
 			}
 
-			.status-row {
+			.form-row label {
+				min-width: 80px;
+				font-size: 13px;
+			}
+
+			.form-row input[type="number"] {
+				width: 80px;
+				padding: 3px 4px;
+				border: 2px solid;
+				border-color: var(--win-dark) var(--win-white) var(--win-white)
+					var(--win-dark);
+				background: var(--win-white);
+				font-size: 13px;
+				font-family: inherit;
+			}
+
+			.form-row span {
+				font-size: 12px;
+				color: var(--win-dark);
+			}
+
+			/* Checkbox */
+			.checkbox-row {
+				display: flex;
+				align-items: flex-start;
+				gap: 6px;
+				cursor: pointer;
+			}
+
+			.win-checkbox {
+				width: 13px;
+				height: 13px;
+				border: 2px solid;
+				border-color: var(--win-dark) var(--win-white) var(--win-white)
+					var(--win-dark);
+				background: var(--win-white);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				flex-shrink: 0;
+				margin-top: 2px;
+			}
+
+			.checkbox-row input[type="checkbox"] {
+				display: none;
+			}
+
+			.checkbox-row input[type="checkbox"]:checked + .win-checkbox::after {
+				content: "✓";
+				font-size: 11px;
+				font-weight: bold;
+				color: var(--win-text);
+			}
+
+			.checkbox-label {
+				font-size: 13px;
+				line-height: 1.4;
+			}
+
+			.checkbox-hint {
+				font-size: 11px;
+				color: var(--win-dark);
+				margin-top: 2px;
+			}
+
+			/* Status Bar */
+			.status-bar {
+				display: flex;
+				border-top: 1px solid var(--win-white);
+				box-shadow: inset 0 1px 0 var(--win-dark);
+				padding-top: 2px;
+				margin-top: 8px;
+			}
+
+			.status-bar-field {
+				padding: 2px 6px;
+				border: 1px solid;
+				border-color: var(--win-dark) var(--win-white) var(--win-white)
+					var(--win-dark);
+				font-size: 12px;
+				background: var(--win-bg);
+			}
+
+			.status-bar-field:first-child {
+				flex: 1;
+			}
+
+			.status-bar-field.status-running {
+				color: #008000;
+			}
+
+			.status-bar-field.status-paused {
+				color: #808000;
+			}
+
+			.status-bar-field.status-error {
+				color: #ff0000;
+			}
+
+			/* List View / Log Area */
+			.list-view {
+				border: 2px solid;
+				border-color: var(--win-dark) var(--win-white) var(--win-white)
+					var(--win-dark);
+				background: var(--win-white);
+				max-height: 150px;
+				overflow-y: auto;
+				font-family: "Courier New", monospace;
+				font-size: 12px;
+			}
+
+			.list-header {
+				display: flex;
+				background: var(--win-bg);
+				border-bottom: 1px solid var(--win-dark);
+				position: sticky;
+				top: 0;
+			}
+
+			.list-header-cell {
+				padding: 2px 6px;
+				border-right: 1px solid var(--win-dark);
+				font-weight: bold;
+				font-size: 12px;
+				font-family: inherit;
+			}
+
+			.list-header-cell:first-child {
+				width: 70px;
+			}
+
+			.list-header-cell:nth-child(2) {
+				width: 50px;
+			}
+
+			.list-header-cell:last-child {
+				flex: 1;
+				border-right: none;
+			}
+
+			.list-row {
+				display: flex;
+				border-bottom: 1px solid #e0e0e0;
+			}
+
+			.list-row:hover {
+				background: var(--win-highlight);
+				color: var(--win-highlight-text);
+			}
+
+			.list-cell {
+				padding: 2px 6px;
+				border-right: 1px solid #e0e0e0;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+
+			.list-cell:first-child {
+				width: 70px;
+				color: var(--win-dark);
+			}
+
+			.list-cell:nth-child(2) {
+				width: 50px;
+			}
+
+			.list-cell:last-child {
+				flex: 1;
+				border-right: none;
+			}
+
+			.list-cell.log-info {
+				color: #000080;
+			}
+			.list-cell.log-ok {
+				color: #008000;
+			}
+			.list-cell.log-warn {
+				color: #808000;
+			}
+			.list-cell.log-error {
+				color: #ff0000;
+			}
+
+			.list-row:hover .list-cell {
+				color: inherit;
+			}
+
+			/* Scrollbar Styling */
+			.list-view::-webkit-scrollbar {
+				width: 16px;
+			}
+
+			.list-view::-webkit-scrollbar-track {
+				background: repeating-linear-gradient(
+					0deg,
+					var(--win-bg) 0px,
+					var(--win-bg) 2px,
+					var(--win-white) 2px,
+					var(--win-white) 4px
+				);
+				border-left: 1px solid var(--win-dark);
+			}
+
+			.list-view::-webkit-scrollbar-thumb {
+				background: var(--win-bg);
+				border: 2px solid;
+				border-color: var(--win-white) var(--win-darker) var(--win-darker)
+					var(--win-white);
+			}
+
+			/* Progress Section */
+			.progress-info {
 				display: flex;
 				justify-content: space-between;
 				margin-bottom: 6px;
 				font-size: 12px;
 			}
 
-			.status-row:last-child {
-				margin-bottom: 0;
+			.progress-bar-container {
+				height: 16px;
+				border: 2px solid;
+				border-color: var(--win-dark) var(--win-white) var(--win-white)
+					var(--win-dark);
+				background: var(--win-white);
+				overflow: hidden;
 			}
 
-			.status-label {
-				font-weight: 600;
-				color: #555;
+			.progress-bar {
+				height: 100%;
+				width: 0%;
+				background: repeating-linear-gradient(
+					90deg,
+					var(--win-highlight) 0px,
+					var(--win-highlight) 8px,
+					transparent 8px,
+					transparent 10px
+				);
+				transition: width 0.3s;
 			}
 
-			.status-value {
-				color: #333;
+			/* Desktop Icons (decoration) */
+			.desktop-icons {
+				position: fixed;
+				top: 20px;
+				right: 20px;
+				display: flex;
+				flex-direction: column;
+				gap: 16px;
+				opacity: 0.3;
 			}
 
-			.status-value.state-idle {
-				color: #6c757d;
-			}
-
-			.status-value.state-running {
-				color: #28a745;
-				font-weight: 600;
-			}
-
-			.status-value.state-paused {
-				color: #ffc107;
-				font-weight: 600;
-			}
-
-			.status-value.state-finished {
-				color: #007bff;
-				font-weight: 600;
-			}
-
-			.status-value.state-error {
-				color: #dc3545;
-				font-weight: 600;
-			}
-
-			.hint {
+			.desktop-icon {
+				text-align: center;
+				color: white;
 				font-size: 11px;
-				color: #6c757d;
-				margin-top: 4px;
+				text-shadow: 1px 1px 0 #000;
 			}
 
-			.delay-control {
+			.desktop-icon-img {
+				width: 32px;
+				height: 32px;
+				background: var(--win-bg);
+				border: 1px solid var(--win-dark);
+				margin: 0 auto 4px;
 				display: flex;
 				align-items: center;
-				gap: 8px;
-				margin-top: 8px;
+				justify-content: center;
+				font-size: 16px;
 			}
 
-			.delay-control label {
-				font-size: 12px;
-				color: #555;
-			}
+			@media (max-width: 400px) {
+				body {
+					padding: 10px;
+				}
 
-			.delay-control input {
-				flex: 1;
-				padding: 6px;
-				border: 1px solid #ddd;
-				border-radius: 4px;
-				font-size: 12px;
-			}
+				.button-row {
+					flex-wrap: wrap;
+				}
 
-			.delay-control span {
-				font-size: 11px;
-				color: #6c757d;
-			}
+				.win-button {
+					min-width: 65px;
+					padding: 4px 10px;
+					font-size: 12px;
+				}
 
-			.logs {
-				max-height: 200px;
-				overflow-y: auto;
-				background: #f8f9fa;
-				border: 1px solid #ddd;
-				border-radius: 4px;
-				padding: 8px;
-				font-family: monospace;
-				font-size: 11px;
-			}
-
-			.log-entry {
-				margin-bottom: 4px;
-				padding: 4px 6px;
-				border-radius: 3px;
-				line-height: 1.4;
-			}
-
-			.log-entry:last-child {
-				margin-bottom: 0;
-			}
-
-			.log-info {
-				background: #e7f3ff;
-				color: #0066cc;
-			}
-
-			.log-success {
-				background: #d4edda;
-				color: #155724;
-			}
-
-			.log-warning {
-				background: #fff3cd;
-				color: #856404;
-			}
-
-			.log-error {
-				background: #f8d7da;
-				color: #721c24;
-			}
-
-			.log-time {
-				color: #6c757d;
-				font-weight: 600;
-				margin-right: 6px;
-			}
-
-			.log-level {
-				font-weight: 600;
-				margin-right: 6px;
-				text-transform: uppercase;
+				.desktop-icons {
+					display: none;
+				}
 			}
 		</style>
 	</head>
 	<body>
-		<h1>🎬 Firefly Automation</h1>
-
-		<div class="section">
-			<div class="section-title">Prompts (one per line)</div>
-			<textarea
-				id="promptInput"
-				placeholder="Enter prompts, one per line&#10;Example:&#10;First prompt&#10;Second prompt&#10;Third prompt"
-			></textarea>
-			<div class="hint">You can paste multiple lines at once</div>
-		</div>
-
-		<div class="section">
-			<div class="section-title">Or Upload TXT File</div>
-			<div class="file-input-wrapper">
-				<label for="txtInput" class="file-input-label">
-					📁 Choose TXT File
-				</label>
-				<input type="file" id="txtInput" accept=".txt" />
-			</div>
-			<div class="file-name" id="fileName">No file selected</div>
-			<div class="hint">
-				One prompt per line (supports long prompts with horizontal scroll)
-			</div>
-		</div>
-
-		<div class="section">
-			<div class="section-title">Settings</div>
-			<div class="delay-control">
-				<label for="delayInput">Delay:</label>
-				<input
-					type="number"
-					id="delayInput"
-					min="500"
-					max="10000"
-					step="100"
-					value="1000"
-				/>
-				<span>ms</span>
-			</div>
-			<div class="hint">
-				Buffer time between prompts (actual wait controlled by button state)
-			</div>
-
-			<div style="margin-top: 12px">
-				<label style="display: flex; align-items: center; cursor: pointer">
-					<input
-						type="checkbox"
-						id="autoDownloadCheckbox"
-						checked
-						style="margin-right: 8px"
-					/>
-					<span style="font-size: 13px"
-						>Auto-download videos after generation</span
-					>
-				</label>
-				<div class="hint" style="margin-left: 24px">
-					Automatically click download button after each video generates
+		<div class="window">
+			<div class="title-bar">
+				<div class="title-bar-text">
+					<div class="title-bar-icon">🎬</div>
+					Firefly Automation
+				</div>
+				<div class="title-bar-controls">
+					<button aria-label="Minimize">_</button>
+					<button aria-label="Maximize">□</button>
+					<button aria-label="Close">×</button>
 				</div>
 			</div>
-		</div>
 
-		<div class="section">
-			<div class="controls">
-				<button id="startBtn">▶️ Start</button>
-				<button id="pauseBtn" disabled>⏸️ Pause</button>
-				<button id="stopBtn" disabled>⏹️ Stop</button>
-			</div>
-		</div>
+			<div class="window-body">
+				<div class="menu-bar">
+					<div class="menu-item"><span>F</span>ile</div>
+					<div class="menu-item"><span>E</span>dit</div>
+					<div class="menu-item"><span>V</span>iew</div>
+					<div class="menu-item"><span>T</span>ools</div>
+					<div class="menu-item"><span>H</span>elp</div>
+				</div>
 
-		<div class="status">
-			<div class="status-row">
-				<span class="status-label">State:</span>
-				<span class="status-value state-idle" id="statusState">Idle</span>
-			</div>
-			<div class="status-row">
-				<span class="status-label">Progress:</span>
-				<span class="status-value" id="statusProgress">0 / 0</span>
-			</div>
-			<div class="status-row">
-				<span class="status-label">Current:</span>
-				<span class="status-value" id="statusCurrent">—</span>
-			</div>
-		</div>
+				<div class="group-box">
+					<div class="group-box-title">Prompts</div>
+					<textarea
+						id="promptInput"
+						placeholder="Enter prompts here, one per line...
 
-		<div class="section">
-			<div class="section-title">Logs</div>
-			<div class="logs" id="logsContainer">
-				<div class="log-entry log-info">Ready to start...</div>
+Example:
+A beautiful sunset over mountains
+Abstract particle effects
+Underwater scene with coral"
+					></textarea>
+				</div>
+
+				<div class="group-box">
+					<div class="group-box-title">Load from File</div>
+					<div class="file-row">
+						<input
+							type="text"
+							class="file-path"
+							id="filePath"
+							value=""
+							placeholder="No file selected"
+							readonly
+						/>
+						<button
+							class="win-button"
+							id="browseBtn"
+						>
+							Browse...
+						</button>
+					</div>
+					<input type="file" id="txtInput" accept=".txt" />
+				</div>
+
+				<div class="group-box">
+					<div class="group-box-title">Settings</div>
+					<div class="form-row">
+						<label for="delayInput">Delay (ms):</label>
+						<input
+							type="number"
+							id="delayInput"
+							min="500"
+							max="10000"
+							step="100"
+							value="1000"
+						/>
+						<span>milliseconds between prompts</span>
+					</div>
+					<label class="checkbox-row">
+						<input type="checkbox" id="autoDownloadCheckbox" checked />
+						<div class="win-checkbox"></div>
+						<div>
+							<div class="checkbox-label">
+								Auto-download generated videos
+							</div>
+							<div class="checkbox-hint">
+								Automatically save files after generation
+							</div>
+						</div>
+					</label>
+				</div>
+
+				<div class="group-box">
+					<div class="group-box-title">Actions</div>
+					<div class="button-row">
+						<button class="win-button primary" id="startBtn">
+							▶ Start
+						</button>
+						<button class="win-button" id="pauseBtn" disabled>
+							⏸ Pause
+						</button>
+						<button class="win-button" id="stopBtn" disabled>
+							⏹ Stop
+						</button>
+					</div>
+				</div>
+
+				<div class="group-box">
+					<div class="group-box-title">Progress</div>
+					<div class="progress-info">
+						<span>Processing: 0 of 0 prompts</span>
+						<span>0%</span>
+					</div>
+					<div class="progress-bar-container">
+						<div class="progress-bar" style="width: 0%"></div>
+					</div>
+				</div>
+
+				<div class="group-box">
+					<div class="group-box-title">Log</div>
+					<div class="list-view" id="logsContainer">
+						<div class="list-header">
+							<div class="list-header-cell">Time</div>
+							<div class="list-header-cell">Type</div>
+							<div class="list-header-cell">Message</div>
+						</div>
+						<div class="list-row">
+							<div class="list-cell">00:00:00</div>
+							<div class="list-cell log-info">INFO</div>
+							<div class="list-cell">
+								Application started successfully.
+							</div>
+						</div>
+						<div class="list-row">
+							<div class="list-cell">00:00:01</div>
+							<div class="list-cell log-ok">OK</div>
+							<div class="list-cell">All modules loaded.</div>
+						</div>
+						<div class="list-row">
+							<div class="list-cell">00:00:02</div>
+							<div class="list-cell log-info">INFO</div>
+							<div class="list-cell">
+								Ready. Enter prompts or load a file.
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="status-bar">
+					<div class="status-bar-field">Ready</div>
+					<div class="status-bar-field">0 prompts</div>
+					<div class="status-bar-field">00:00:00</div>
+				</div>
 			</div>
 		</div>
 
